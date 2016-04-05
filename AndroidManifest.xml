@@ -48,7 +48,7 @@
         <activity android:name="com.itheima62.mobileguard.activities.Setup1Activity"></activity>
         <activity android:name="com.itheima62.mobileguard.activities.LostFindActivity"></activity>
         <activity android:name="com.itheima62.mobileguard.activities.HomeActivity"></activity>
-   
+   		<activity android:name="com.itheima62.mobileguard.activities.TelSmsSafeActivity"></activity>
         <service android:name="com.itheima62.mobileguard.service.LocationService"></service>
         <service android:name="com.itheima62.mobileguard.service.LostFindService"></service>
         <receiver android:name="com.itheima62.mobileguard.receiver.BootReceiver">

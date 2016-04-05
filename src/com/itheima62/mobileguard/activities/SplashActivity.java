@@ -30,6 +30,7 @@ import android.view.Menu;
 import android.view.View;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
+import android.view.animation.Animation.AnimationListener;
 import android.view.animation.AnimationSet;
 import android.view.animation.RotateAnimation;
 import android.view.animation.ScaleAnimation;
@@ -69,17 +70,24 @@ public class SplashActivity extends Activity {
 		initData();
 		// 初始化动画
 		initAnimation();
-		//判断是否进行服务器的版本检测,方法第三个参数为默认值
-		if(SpTools.getBoolean(getApplicationContext(), MyConstants.AUTOUPDATA, false)){
-			//true 版本的更新
 		
+		//耗时的功能封装，只要耗时的处理，都放到此方法
+		//timeInitialization() 如下：
+
+	}
+	
+	/**
+	 * 耗时的功能封装，只要耗时的处理，都放到此方法
+	 */
+	private void timeInitialization(){
+		//一开始动画，就应该干耗时的业务（网络，本地数据初始化，数据的拷贝等）
+		if (SpTools.getBoolean(getApplicationContext(), MyConstants.AUTOUPDATE, false)) {
+			//true 自动更新
 			// 检测服务器的版本
 			checkVerion();
-		}else{
-			//直接进入主界面
-			loadMain();
 		}
-
+		//增加自己的耗时功能处理
+		
 	}
 
 	private void initData() {
@@ -442,6 +450,44 @@ public class SplashActivity extends Activity {
 		as.addAnimation(sa);
 		as.addAnimation(rotate);
 		as.addAnimation(aa);
+		
+		//设置动画完成的事件监听
+		as.setAnimationListener(new AnimationListener() {
+			
+			/*
+			 * 开始动画做版本检测
+			 * (non-Javadoc)
+			 * @see android.view.animation.Animation.AnimationListener#onAnimationStart(android.view.animation.Animation)
+			 */
+			@Override
+			public void onAnimationStart(Animation animation) {
+				// TODO Auto-generated method stub
+				//耗时的功能统一处理封装
+				timeInitialization();
+			}
+			
+			@Override
+			public void onAnimationRepeat(Animation animation) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			/**
+			 * 动画结束，做事件处理
+			 */
+			@Override
+			public void onAnimationEnd(Animation animation) {
+				//动画播完进入主界面
+			
+				//判断是否进行服务器版本的检测
+				if (!SpTools.getBoolean(getApplicationContext(), MyConstants.AUTOUPDATE, false)) {
+					//不做版本检测，直接进入主界面
+					loadMain();
+				} else {
+					//界面的衔接是有自动更新来完成，在此不做处理
+				}
+			}
+		});
 		// 同时播放动画
 		rl_root.startAnimation(as);
 
